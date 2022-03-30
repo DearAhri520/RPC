@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7107f473-29bb-4157-a2aa-8ab88bef1c98" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/client/RpcClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/protocol/SequenceIdGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/handler/RpcResponseMessageHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/HelloService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/HelloServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/service/ServicesFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/client/ChatClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/client/ChatClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/config/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/config/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/message/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/message/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/message/PingMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/message/PingMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/message/PongMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/message/PongMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/message/RpcRequestMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/message/RpcRequestMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/message/RpcResponseMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/message/RpcResponseMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/protocol/MessageCodecSharable.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/MessageCodecSharable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/protocol/ProtocolFrameDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/ProtocolFrameDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/serializer/Serializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/serializer/Serializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/serializer/SerializerAlgorithm.java" beforeDir="false" afterPath="$PROJECT_DIR$/serializer/SerializerAlgorithm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/ChatServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/RpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/handler/QuitHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/handler/QuitHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/handler/RpcRequestMessageHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/handler/RpcRequestMessageHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/server/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/server/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/server/UserServiceFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/server/UserServiceFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ChatGroup/server/server/UserServiceMemoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/server/UserServiceMemoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
+  </component>
+  <component name="ProjectId" id="276MH3k9mJRfAEi7h19CPdg3J8w" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.importing" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7107f473-29bb-4157-a2aa-8ab88bef1c98" name="Changes" comment="" />
+      <created>1648635991372</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648635991372</updated>
+      <workItem from="1648635992651" duration="19000" />
+      <workItem from="1648639470306" duration="172000" />
+      <workItem from="1648639781604" duration="66000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
