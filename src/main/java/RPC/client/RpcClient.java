@@ -71,7 +71,7 @@ public class RpcClient {
             /*4.发送消息对象*/
             getChannel().writeAndFlush(message);
             RpcResponseMessageHandler.PROMISES.put(sequenceId, promise);
-            /*等待promise结果*/
+            /*5.等待promise结果*/
             promise.await();
             /*正常调用*/
             if (promise.isSuccess()) {

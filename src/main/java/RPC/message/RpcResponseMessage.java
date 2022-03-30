@@ -1,10 +1,16 @@
 package RPC.message;
 
+import RPC.protocol.MessageType;
+
 /**
  * @author DearAhri520
  * @date 2022/3/28
  */
 public class RpcResponseMessage extends Message {
+    public RpcResponseMessage() {
+        this.messageType = MessageType.RpcResponseMessage.getMessageType();
+    }
+
     /**
      * 返回值
      */
@@ -16,9 +22,8 @@ public class RpcResponseMessage extends Message {
 
     @Override
     public int getMessageType() {
-        return RPC_MESSAGE_TYPE_RESPONSE;
+        return this.messageType;
     }
-
 
     public void setReturnValue(Object returnValue) {
         this.returnValue = returnValue;

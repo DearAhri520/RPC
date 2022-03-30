@@ -1,6 +1,10 @@
 package RPC.serializer;
 
 import com.google.gson.*;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.RuntimeSchema;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -11,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @date 2022/3/26
  */
 public enum SerializerAlgorithm implements Serializer {
-    /*Java的序列化和反序列化*/
+    /*Java自带的的序列化和反序列化*/
     Java {
         @Override
         public <T> byte[] serialize(T object) {
@@ -28,6 +32,7 @@ public enum SerializerAlgorithm implements Serializer {
         }
 
         @Override
+        @SuppressWarnings({"unchecked"})
         public <T> T deserialize(Class<T> clazz, byte[] bytes) {
             T target = null;
             try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
@@ -41,7 +46,7 @@ public enum SerializerAlgorithm implements Serializer {
         }
     },
 
-    /*Json的序列化和反序列化*/
+    /*基于gson的Json序列化和反序列化*/
     Json {
         @Override
         public <T> byte[] serialize(T object) {
@@ -58,9 +63,39 @@ public enum SerializerAlgorithm implements Serializer {
             /*此处的clazz为具体类型的Class对象，而不是父类Message的类型*/
             return gson.fromJson(json, clazz);
         }
+    },
+
+    /*基于protostuff的序列化和反序列化*/
+    Protostuff {
+        private final LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T> byte[] serialize(T obj) {
+            Class<T> clazz = (Class<T>) obj.getClass();
+            Schema<T> schema = RuntimeSchema.getSchema(clazz);
+            byte[] data;
+            try {
+                data = ProtostuffIOUtil.toByteArray(obj, schema, buffer);
+            } finally {
+                buffer.clear();
+            }
+            return data;
+        }
+
+        @Override
+        public <T> T deserialize(Class<T> clazz, byte[] bytes) {
+            Schema<T> schema = RuntimeSchema.getSchema(clazz);
+            T obj = schema.newMessage();
+            ProtostuffIOUtil.mergeFrom(bytes, obj, schema);
+            return obj;
+        }
     }
 }
 
+/**
+ * 用于GSON的编解码器
+ */
 class ClassCodeC implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
 
     @Override

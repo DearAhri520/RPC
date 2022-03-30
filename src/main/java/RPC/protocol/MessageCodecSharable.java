@@ -15,6 +15,11 @@ import java.util.List;
  * @author DearAhri520
  * 协议解析
  * 必须和 LengthFieldBasedFrameDecoder 一起使用，确保接受到的 ByteBuf 消息是完整的
+ *
+ * |魔数:4字节
+ * |编解码版本:1字节
+ * |序列化方式:1字节
+ * |
  */
 @Slf4j
 @ChannelHandler.Sharable
@@ -22,11 +27,11 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws Exception {
         ByteBuf out = ctx.alloc().buffer();
-        /*1. 4 字节的魔数*/
-        out.writeBytes(new byte[]{1, 2, 3, 4});
-        /*2. 1 字节的版本*/
+        /*1. 4 字节的魔数 ,转换成int即为 387383298 */
+        out.writeBytes(new byte[]{23, 23, 0, 2});
+        /*2. 1 字节的编解码版本*/
         out.writeByte(1);
-        /*3. 1 字节的序列化方式 jdk 0 , json 1*/
+        /*3. 1 字节的序列化方式 jdk 0 , json 1 , protostuff 2*/
         out.writeByte(Config.getSerializerAlgorithm().ordinal());
         /*4. 1 字节的指令类型*/
         out.writeByte(msg.getMessageType());
@@ -45,12 +50,20 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        int magic = 387383298;
+
         int magicNum = in.readInt();
+        /*魔数:387383298,转换成byte数组即为{23,23,0,2}*/
+        if (magicNum != magic) {
+            log.error("消息{}反序列化失败,魔数错误", in.array());
+            throw new RuntimeException("消息反序列化失败");
+        }
         byte version = in.readByte();
         byte serializerAlgorithm = in.readByte();
         byte messageType = in.readByte();
         int sequenceId = in.readInt();
         in.readByte();
+        /*读取消息体长度*/
         int length = in.readInt();
         byte[] bytes = new byte[length];
         in.readBytes(bytes, 0, length);
@@ -62,6 +75,7 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
             Class<?> messageClass = Message.getMessageClass(messageType);
             message = (Message) algorithm.deserialize(messageClass, bytes);
         } else {
+            log.error("消息{}反序列化失败,编解码算法ID错误", in.array());
             throw new RuntimeException("消息反序列化失败");
         }
         out.add(message);

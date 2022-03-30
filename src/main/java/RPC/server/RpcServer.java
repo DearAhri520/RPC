@@ -41,12 +41,14 @@ public class RpcServer {
                     ch.pipeline().addLast(new ChannelDuplexHandler() {
                         @Override
                         public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                            /*获取事件*/
-                            IdleStateEvent event = (IdleStateEvent) evt;
-                            /*读空闲超过5s,则认为网络异常,关闭连接*/
-                            if (event.state() == IdleState.READER_IDLE) {
-                                ctx.channel().close();
-                                log.debug("读空闲已经超过5秒");
+                            if (evt instanceof IdleStateEvent) {
+                                /*获取事件*/
+                                IdleStateEvent event = (IdleStateEvent) evt;
+                                /*读空闲超过5s,则认为网络异常,关闭连接*/
+                                if (event.state() == IdleState.READER_IDLE) {
+                                    ctx.channel().close();
+                                    log.debug("读空闲已经超过5秒");
+                                }
                             }
                         }
                     });

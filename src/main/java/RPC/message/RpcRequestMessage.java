@@ -1,5 +1,7 @@
 package RPC.message;
 
+import RPC.protocol.MessageType;
+
 import java.util.Arrays;
 
 /**
@@ -25,14 +27,14 @@ public class RpcRequestMessage extends Message {
     /**
      * 方法参数类型数组
      */
-    private Class[] parameterTypes;
+    private Class<?>[] parameterTypes;
 
     /**
      * 方法参数值数组
      */
     private Object[] parameterValue;
 
-    public RpcRequestMessage(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class[] parameterTypes, Object[] parameterValue) {
+    public RpcRequestMessage(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class<?>[] parameterTypes, Object[] parameterValue) {
         super.setSequenceId(sequenceId);
         /*todo:利用Spring改进,在容器中寻找接口的实现类*/
         this.interfaceName = interfaceName;
@@ -40,11 +42,12 @@ public class RpcRequestMessage extends Message {
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
         this.parameterValue = parameterValue;
+        this.messageType = MessageType.RpcRequestMessage.getMessageType();
     }
 
     @Override
     public int getMessageType() {
-        return RPC_MESSAGE_TYPE_REQUEST;
+        return this.messageType;
     }
 
     public String getInterfaceName() {
@@ -59,7 +62,7 @@ public class RpcRequestMessage extends Message {
         return returnType;
     }
 
-    public Class[] getParameterTypes() {
+    public Class<?>[] getParameterTypes() {
         return parameterTypes;
     }
 

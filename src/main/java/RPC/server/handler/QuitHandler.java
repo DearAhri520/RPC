@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+
 /**
  * @author DearAhri520
  * @date 2022/3/22
@@ -14,17 +16,21 @@ import lombok.extern.slf4j.Slf4j;
 public class QuitHandler extends ChannelInboundHandlerAdapter {
     @Override
     /**
-     * 正常连接断开时触发该事件
+     * 连接断开时触发该事件
      * */
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.debug("{} 已经正常断开", ctx.channel());
+        log.info("连接 {} 已经断开", ctx.channel());
     }
 
     @Override
     /**
-     * 异常连接断开时触发该事件
+     * 出现异常时触发该事件
      * */
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.debug("{} 已经异常断开", ctx.channel());
+        /*记录异常日志*/
+        log.error(Arrays.toString(cause.getStackTrace()));
+        /*关闭连接*/
+        ctx.channel().close();
+        log.info("尝试关闭连接 {}", ctx.channel());
     }
 }

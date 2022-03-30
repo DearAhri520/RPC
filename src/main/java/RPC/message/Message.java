@@ -1,5 +1,6 @@
 package RPC.message;
 
+import RPC.protocol.MessageType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,31 +14,26 @@ import java.util.Map;
 public abstract class Message implements Serializable {
 
     public static Class<?> getMessageClass(int messageType) {
-        return messageClasses.get(messageType);
+        return MESSAGE_CLASSES.get(messageType);
     }
 
     private int sequenceId;
 
-    private int messageType;
+    protected int messageType;
 
+    /**
+     * 获取消息类型
+     *
+     * @return 消息类型
+     */
     public abstract int getMessageType();
 
-
-    public static final int PING_MESSAGE = 14;
-    public static final int PONG_MESSAGE = 15;
-
-    /**
-     * rpc请求消息
-     */
-    public static final int RPC_MESSAGE_TYPE_REQUEST = 101;
-    /**
-     * rpc响应消息
-     */
-    public static final int RPC_MESSAGE_TYPE_RESPONSE = 102;
-    private static final Map<Integer, Class<?>> messageClasses = new HashMap<>();
+    private static final Map<Integer, Class<?>> MESSAGE_CLASSES = new HashMap<>();
 
     static {
-        messageClasses.put(RPC_MESSAGE_TYPE_REQUEST, RpcRequestMessage.class);
-        messageClasses.put(RPC_MESSAGE_TYPE_RESPONSE, RpcResponseMessage.class);
+        MESSAGE_CLASSES.put(MessageType.RpcRequestMessage.getMessageType(), RpcRequestMessage.class);
+        MESSAGE_CLASSES.put(MessageType.RpcResponseMessage.getMessageType(), RpcResponseMessage.class);
+        MESSAGE_CLASSES.put(MessageType.PingMessage.getMessageType(), PingMessage.class);
+        MESSAGE_CLASSES.put(MessageType.PongMessage.getMessageType(), PongMessage.class);
     }
 }
