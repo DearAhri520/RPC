@@ -29,10 +29,8 @@ public class RpcResponseMessageHandler extends SimpleChannelInboundHandler<RpcRe
             Object returnValue = msg.getReturnValue();
             Exception exceptionValue = msg.getExceptionValue();
             if (exceptionValue != null) {
-                System.out.println(true);
                 promise.setFailure(exceptionValue);
             } else {
-                System.out.println(false);
                 promise.setSuccess(returnValue);
             }
         }

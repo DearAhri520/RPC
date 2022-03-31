@@ -25,7 +25,7 @@ public class RpcServer {
     public static void main(String[] args) {
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
-        LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
+        LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
         MessageCodecSharable messageCodec = new MessageCodecSharable();
         RpcRequestMessageHandler rpcHandler = new RpcRequestMessageHandler();
         try {

@@ -1,4 +1,4 @@
-package RPC.Close;
+package RPC.close;
 
 import lombok.SneakyThrows;
 

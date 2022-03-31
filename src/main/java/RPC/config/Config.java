@@ -1,5 +1,6 @@
 package RPC.config;
 
+import RPC.compressor.CompressorAlgorithm;
 import RPC.serializer.SerializerAlgorithm;
 
 import java.io.IOException;
@@ -61,6 +62,34 @@ public abstract class Config {
             return SerializerAlgorithm.Java;
         } else {
             return SerializerAlgorithm.valueOf(value);
+        }
+    }
+
+    /**
+     * 获取压缩最小消息长度,当消息体小于该长度时,不压缩消息
+     *
+     * @return 压缩最小消息长度
+     */
+    public static int getMinCompressLength() {
+        String value = properties.getProperty("compress.minCompressLength");
+        if (value == null) {
+            return 30;
+        } else {
+            return Integer.parseInt(value);
+        }
+    }
+
+    /**
+     * 获取压缩最小消息长度,当消息体小于该长度时,不压缩消息
+     *
+     * @return 压缩最小消息长度
+     */
+    public static CompressorAlgorithm getCompressAlgorithm() {
+        String value = properties.getProperty("compress.algorithm");
+        if (value == null) {
+            return CompressorAlgorithm.Gzip;
+        } else {
+            return CompressorAlgorithm.valueOf(value);
         }
     }
 }
