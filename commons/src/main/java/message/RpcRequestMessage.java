@@ -1,0 +1,83 @@
+package message;
+
+import protocol.MessageType;
+
+import java.util.Arrays;
+
+/**
+ * @author DearAhri520
+ * @date 2022/3/28
+ */
+public class RpcRequestMessage extends Message {
+    /**
+     * 调用的接口全限定名，服务端根据它找到实现
+     */
+    private String interfaceName;
+
+    /**
+     * 调用接口中的方法名
+     */
+    private String methodName;
+
+    /**
+     * 方法返回类型
+     */
+    private Class<?> returnType;
+
+    /**
+     * 方法参数类型数组
+     */
+    private Class<?>[] parameterTypes;
+
+    /**
+     * 方法参数值数组
+     */
+    private Object[] parameterValue;
+
+    public RpcRequestMessage(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class<?>[] parameterTypes, Object[] parameterValue) {
+        super.setSequenceId(sequenceId);
+        /*todo:利用Spring改进,在容器中寻找接口的实现类*/
+        this.interfaceName = interfaceName;
+        this.methodName = methodName;
+        this.returnType = returnType;
+        this.parameterTypes = parameterTypes;
+        this.parameterValue = parameterValue;
+        this.messageType = MessageType.RpcRequestMessage.getMessageType();
+    }
+
+    @Override
+    public int getMessageType() {
+        return this.messageType;
+    }
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+
+    public Class<?>[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    public Object[] getParameterValue() {
+        return parameterValue;
+    }
+
+    @Override
+    public String toString() {
+        return "RpcRequestMessage{" +
+                "interfaceName='" + interfaceName + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", returnType=" + returnType +
+                ", parameterTypes=" + Arrays.toString(parameterTypes) +
+                ", parameterValue=" + Arrays.toString(parameterValue) +
+                '}';
+    }
+}
