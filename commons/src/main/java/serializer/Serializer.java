@@ -3,6 +3,7 @@ package serializer;
 /**
  * @author DearAhri520
  * <p>
+ * 序列化接口
  */
 public interface Serializer {
     /**

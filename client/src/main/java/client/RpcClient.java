@@ -29,7 +29,6 @@ import java.lang.reflect.Proxy;
 
 /**
  * @author DearAhri520
- * @date 2022/3/20
  */
 @Slf4j
 public class RpcClient {
@@ -38,7 +37,7 @@ public class RpcClient {
     private ServerList serverList;
 
     public RpcClient() {
-        this.serverList = new ServerList();
+        this.serverList = new ServerList(config);
     }
 
     /**
@@ -67,7 +66,7 @@ public class RpcClient {
             String[] connectString = serverList.getProvider(serviceClass.getName(), message).split(":");
             /*获取channel*/
             Channel channel = getChannel(connectString[0], connectString[1]);
-            log.info("连接服务器: IP:"+connectString[0]+" ,端口:"+connectString[1]);
+            log.info("连接服务器: IP:" + connectString[0] + " ,端口:" + connectString[1]);
             /*3.准备一个promise对象来接收结果,指定异步接收结果的线程*/
             DefaultPromise<Object> promise = new DefaultPromise<>(channel.eventLoop());
             /*4.设置消息序号*/

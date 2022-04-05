@@ -1,4 +1,6 @@
-package compressor;
+package spi;
+
+import compressor.CompressorAlgorithm;
 
 import java.io.IOException;
 

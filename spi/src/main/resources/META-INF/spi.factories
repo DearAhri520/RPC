@@ -1,0 +1,5 @@
+serializer.SerializerAlgorithm=\
+    spi.JavaSerializerAlgorithm
+
+compressor.CompressorAlgorithm=\
+    spi.DefaultCompressorAlgorithm

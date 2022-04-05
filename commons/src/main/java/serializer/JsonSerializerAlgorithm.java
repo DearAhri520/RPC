@@ -1,8 +1,8 @@
 package serializer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
  * <p>
  * * 基于gson的Json序列化和反序列化
  */
-class JsonSerializerAlgorithm implements SerializerAlgorithm {
+public class JsonSerializerAlgorithm implements SerializerAlgorithm {
     @Override
     public <T> byte[] serialize(T object) {
         Gson gson = new GsonBuilder().registerTypeAdapter(Class.class, new ClassCodeC()).create();
@@ -35,5 +35,26 @@ class JsonSerializerAlgorithm implements SerializerAlgorithm {
     @Override
     public String getName() {
         return "JSON";
+    }
+
+    /**
+     * 用于GSON的编解码器
+     */
+    class ClassCodeC implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
+
+        @Override
+        public Class<?> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            String str = jsonElement.getAsString();
+            try {
+                return Class.forName(str);
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException(e);
+            }
+        }
+
+        @Override
+        public JsonElement serialize(Class<?> aClass, Type type, JsonSerializationContext jsonSerializationContext) {
+            return new JsonPrimitive(aClass.getName());
+        }
     }
 }

@@ -14,7 +14,4 @@
     <context:component-scan base-package="service">
         <context:include-filter type="annotation" expression="annotation.RpcService"/>
     </context:component-scan>
-
-    <!--开启AOP自动代理-->
-    <!--    <aop:aspectj-autoproxy proxy-target-class="true"/>-->
 </beans>

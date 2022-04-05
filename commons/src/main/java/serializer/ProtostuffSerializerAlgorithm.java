@@ -1,12 +1,9 @@
 package serializer;
 
-import com.google.gson.*;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
-
-import java.lang.reflect.Type;
 
 /**
  * @author DearAhri520
@@ -45,26 +42,5 @@ class ProtostuffSerializerAlgorithm implements SerializerAlgorithm {
     @Override
     public String getName() {
         return "Proto";
-    }
-}
-
-/**
- * 用于GSON的编解码器
- */
-class ClassCodeC implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
-
-    @Override
-    public Class<?> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        String str = jsonElement.getAsString();
-        try {
-            return Class.forName(str);
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e);
-        }
-    }
-
-    @Override
-    public JsonElement serialize(Class<?> aClass, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(aClass.getName());
     }
 }

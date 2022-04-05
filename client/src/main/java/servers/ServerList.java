@@ -1,11 +1,11 @@
 package servers;
 
+import config.ClientConfig;
 import curator.CuratorToClient;
+import loadbalancing.LoadingAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import message.Message;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 
 import java.util.HashMap;
 
@@ -18,12 +18,19 @@ public class ServerList {
     /**
      * 服务名->可用服务提供者列表
      */
-    private HashMap<String, ServerProviders> map = new HashMap();
+    private HashMap<String, LoadingAlgorithm> map = new HashMap();
 
     private CuratorToClient curator;
 
-    public ServerList() {
+    private ClientConfig clientConfig;
+
+    private LoadingAlgorithm loadingAlgorithm;
+
+
+    public ServerList(ClientConfig clientConfig) {
         this.curator = new CuratorToClient();
+        this.clientConfig = clientConfig;
+        loadingAlgorithm = clientConfig.getLoadingAlgorithm();
         curator.connect();
         curator.listen((client, event) -> {
             /*仅监听添加与删除事件*/
@@ -41,7 +48,7 @@ public class ServerList {
                 case CHILD_ADDED:
                     /*如果paths长度为3,意味着某个服务被添加*/
                     if (paths.length == 3) {
-                        map.put(paths[2], new ServerProviders());
+                        map.put(paths[2], loadingAlgorithm);
                         log.info("添加服务: {}", paths[2]);
                     }
                     /*如果paths长度为4,意味着某个服务下的IP地址被删除*/
@@ -74,7 +81,7 @@ public class ServerList {
      * @return IP:PORT
      */
     public String getProvider(String service, Message message) {
-        ServerProviders providers = map.get(service);
+        LoadingAlgorithm providers = map.get(service);
         if (providers == null || providers.size() == 0) {
             throw new RuntimeException("服务:" + service + "不存在");
         }

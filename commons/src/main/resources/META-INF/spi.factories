@@ -1,0 +1,6 @@
+serializer.SerializerAlgorithm=\
+    serializer.JsonSerializerAlgorithm,\
+    serializer.ProtostuffSerializerAlgorithm
+
+compressor.CompressorAlgorithm=\
+    compressor.GzipCompressorAlgorithm

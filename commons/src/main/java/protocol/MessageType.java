@@ -2,7 +2,6 @@ package protocol;
 
 /**
  * @author DearAhri520
- * @date 2022/3/30
  */
 public enum MessageType {
     /**

@@ -1,0 +1,2 @@
+loadbalancing.LoadingAlgorithm=\
+    loadbalancing.ConsistentHashLoadingAlgorithm

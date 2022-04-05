@@ -1,6 +1,12 @@
 package compressor;
 
+import lombok.extern.slf4j.Slf4j;
+import serializer.SerializerAlgorithm;
+import serializer.SerializerAlgorithmFactory;
+import spi.FactoriesLoader;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -8,11 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * 序列化算法工厂
  */
+@Slf4j
 public class CompressorAlgorithmFactory {
     static {
         compressorMap = new ConcurrentHashMap<>();
-        addSerializerAlgorithm(new DefaultCompressorAlgorithm());
-        addSerializerAlgorithm(new GzipCompressorAlgorithm());
+        List<CompressorAlgorithm> algorithmList = FactoriesLoader.loadFactories(CompressorAlgorithm.class, CompressorAlgorithmFactory.class.getClassLoader());
+        /*SPI机制加载*/
+        for (int i = 0; i < algorithmList.size(); i++) {
+            addCompressorAlgorithm(algorithmList.get(i));
+        }
     }
 
     private static ConcurrentHashMap<Byte, CompressorAlgorithm> compressorMap;
@@ -40,8 +50,9 @@ public class CompressorAlgorithmFactory {
     /**
      * 添加序列化算法
      */
-    public static void addSerializerAlgorithm(CompressorAlgorithm algorithm) {
+    public static void addCompressorAlgorithm(CompressorAlgorithm algorithm) {
         compressorMap.put(algorithm.getIdentifier(), algorithm);
+        log.info("加载压缩算法 {}", algorithm.getName());
     }
 
     /**

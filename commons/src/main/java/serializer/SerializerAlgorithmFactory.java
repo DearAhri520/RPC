@@ -1,6 +1,10 @@
 package serializer;
 
+import lombok.extern.slf4j.Slf4j;
+import spi.FactoriesLoader;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -8,15 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>
  * 序列化算法工厂
  */
+@Slf4j
 public class SerializerAlgorithmFactory {
+    private static ConcurrentHashMap<Byte, SerializerAlgorithm> serializerMap;
+
     static {
         serializerMap = new ConcurrentHashMap<>();
-        addSerializerAlgorithm(new JavaSerializerAlgorithm());
-        addSerializerAlgorithm(new JsonSerializerAlgorithm());
-        addSerializerAlgorithm(new ProtostuffSerializerAlgorithm());
+        List<SerializerAlgorithm> algorithmList = FactoriesLoader.loadFactories(SerializerAlgorithm.class, SerializerAlgorithmFactory.class.getClassLoader());
+        /*SPI机制加载*/
+        for (int i = 0; i < algorithmList.size(); i++) {
+            addSerializerAlgorithm(algorithmList.get(i));
+        }
     }
-
-    private static ConcurrentHashMap<Byte, SerializerAlgorithm> serializerMap;
 
     /**
      * 根据标识符获取对应序列化算法
@@ -43,6 +50,7 @@ public class SerializerAlgorithmFactory {
      */
     public static void addSerializerAlgorithm(SerializerAlgorithm algorithm) {
         serializerMap.put(algorithm.getIdentifier(), algorithm);
+        log.info("加载序列化算法 {}", algorithm.getName());
     }
 
     /**

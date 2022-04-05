@@ -1,5 +1,6 @@
-package servers;
+package loadbalancing;
 
+import loadbalancing.LoadingAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import message.Message;
 import utils.HashUtil;
@@ -10,7 +11,7 @@ import java.util.*;
  * @author DearAhri520
  */
 @Slf4j
-public class ServerProviders {
+public class ConsistentHashLoadingAlgorithm implements LoadingAlgorithm {
     /**
      * 真实集群列表
      */
@@ -24,7 +25,7 @@ public class ServerProviders {
     /**
      * 构造器
      */
-    public ServerProviders() {
+    public ConsistentHashLoadingAlgorithm() {
 
     }
 
@@ -55,6 +56,7 @@ public class ServerProviders {
      * @param message 发送的消息
      * @return 服务器IP:PORT
      */
+    @Override
     public String getServer(Message message) {
         int hash = HashUtil.hash(message);
         /*只取出所有大于该hash值的部分而不必遍历整个Tree*/
@@ -91,6 +93,7 @@ public class ServerProviders {
      *
      * @param connectString 服务器 IP:PORT
      */
+    @Override
     public void addServer(String connectString) {
         realServers.add(connectString);
         refreshHashCircle();
@@ -101,6 +104,7 @@ public class ServerProviders {
      *
      * @param connectString 服务器 IP:PORT
      */
+    @Override
     public void removeServer(String connectString) {
         int i = 0;
         for (String group : realServers) {
@@ -112,7 +116,13 @@ public class ServerProviders {
         refreshHashCircle();
     }
 
+    @Override
     public int size() {
         return realServers.size();
+    }
+
+    @Override
+    public String getName() {
+        return "consistentHash";
     }
 }

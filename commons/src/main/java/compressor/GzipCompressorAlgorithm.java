@@ -12,7 +12,6 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * @author DearAhri520
- * @date 2022/4/5
  */
 public class GzipCompressorAlgorithm implements CompressorAlgorithm {
 

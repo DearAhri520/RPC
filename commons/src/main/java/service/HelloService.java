@@ -1,8 +1,9 @@
 package service;
 
+import annotation.RpcService;
+
 /**
  * @author DearAhri520
- * @date 2022/3/28
  */
 public interface HelloService {
     /**

@@ -5,6 +5,10 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * @author DearAhri520
  * <p>
@@ -13,12 +17,25 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 public class CuratorClient {
     protected CuratorFramework curatorClient;
 
+    private String connectString;
+
     public CuratorClient() {
-        /*todo:IP:PORT 可以不用写死*/
-        this("47.104.101.168:2181");
+        /*加载 application.properties 文件并读取相应配置*/
+        Properties properties;
+        try (InputStream in = CuratorClient.class.getResourceAsStream("/application.properties")) {
+            if (in == null) {
+                return;
+            }
+            properties = new Properties();
+            properties.load(in);
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+        /*默认设置为 47.104.101.168:2181*/
+        this.connectString = properties.getProperty("ZooKeeperConnect", "47.104.101.168:2181");
     }
 
-    public CuratorClient(String connectString) {
+    public void connect() {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(3000, 10);
         curatorClient = CuratorFrameworkFactory.builder().
                 connectString(connectString).
@@ -27,9 +44,6 @@ public class CuratorClient {
                 retryPolicy(retryPolicy).
                 namespace("rpc").
                 build();
-    }
-
-    public void connect() {
         curatorClient.start();
     }
 

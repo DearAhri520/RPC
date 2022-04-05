@@ -2,6 +2,7 @@ package config;
 
 import compressor.CompressorAlgorithm;
 import compressor.CompressorAlgorithmFactory;
+import lombok.extern.slf4j.Slf4j;
 import serializer.SerializerAlgorithm;
 import serializer.SerializerAlgorithmFactory;
 
@@ -12,6 +13,7 @@ import java.util.HashMap;
  * <p>
  * 服务器配置
  */
+@Slf4j
 public class ServerConfig implements Config {
     public ServerConfig() {
     }
@@ -24,22 +26,22 @@ public class ServerConfig implements Config {
     /**
      * 本机服务器端口
      */
-    private int PORT = 8080;
+    private int port = 8080;
 
     /**
      * 压缩算法,默认为Gzip压缩算法
      */
-    private CompressorAlgorithm COMPRESSOR_ALGORITHM = CompressorAlgorithmFactory.getCompressorAlgorithm("Gzip");
+    private CompressorAlgorithm compressorAlgorithm = CompressorAlgorithmFactory.getCompressorAlgorithm("Gzip");
 
     /**
      * 序列化算法,默认为Java自带的序列化算法
      */
-    private SerializerAlgorithm SERIALIZER_ALGORITHM = SerializerAlgorithmFactory.getSerializerAlgorithm("Java");
+    private SerializerAlgorithm serializerAlgorithm = SerializerAlgorithmFactory.getSerializerAlgorithm("Java");
 
     /**
      * 最小压缩消息长度
      */
-    private int MIN_COMPRESS_LENGTH = 30;
+    private int minCompressLength = 30;
 
 
     public String getSelfIPAddress() {
@@ -47,34 +49,34 @@ public class ServerConfig implements Config {
     }
 
     public int getSelfPort() {
-        return PORT;
+        return port;
     }
 
     @Override
     public SerializerAlgorithm getSerializerAlgorithm() {
-        return SERIALIZER_ALGORITHM;
+        return serializerAlgorithm;
     }
 
     @Override
     public int getMinCompressLength() {
-        return MIN_COMPRESS_LENGTH;
+        return minCompressLength;
     }
 
     @Override
     public CompressorAlgorithm getCompressAlgorithm() {
-        return COMPRESSOR_ALGORITHM;
+        return compressorAlgorithm;
     }
 
     public void setCompressorAlgorithm(CompressorAlgorithm compressorAlgorithm) {
-        COMPRESSOR_ALGORITHM = compressorAlgorithm;
+        this.compressorAlgorithm = compressorAlgorithm;
     }
 
     public void setSerializerAlgorithm(SerializerAlgorithm serializerAlgorithm) {
-        SERIALIZER_ALGORITHM = serializerAlgorithm;
+        this.serializerAlgorithm = serializerAlgorithm;
     }
 
     public void setMinCompressLength(int minCompressLength) {
-        MIN_COMPRESS_LENGTH = minCompressLength;
+        this.minCompressLength = minCompressLength;
     }
 
     public void setConfig(HashMap<String, String> configMap) {
@@ -82,17 +84,20 @@ public class ServerConfig implements Config {
         if ((v = configMap.get("compressor_algorithm")) != null) {
             CompressorAlgorithm algorithm = CompressorAlgorithmFactory.getCompressorAlgorithm(v);
             if (algorithm != null) {
-                this.COMPRESSOR_ALGORITHM = algorithm;
+                this.compressorAlgorithm = algorithm;
             }
         }
         if ((v = configMap.get("serializer_algorithm")) != null) {
             SerializerAlgorithm algorithm = SerializerAlgorithmFactory.getSerializerAlgorithm(v);
             if (algorithm != null) {
-                this.SERIALIZER_ALGORITHM = algorithm;
+                this.serializerAlgorithm = algorithm;
             }
         }
         if ((v = configMap.get("min_compress_length")) != null) {
-            this.MIN_COMPRESS_LENGTH = Integer.parseInt(v);
+            this.minCompressLength = Integer.parseInt(v);
         }
+        log.info("压缩算法设置 {}", this.compressorAlgorithm.getName());
+        log.info("序列化算法设置 {}", this.serializerAlgorithm.getName());
+        log.info("最小压缩消息长度设置 {}", this.minCompressLength);
     }
 }

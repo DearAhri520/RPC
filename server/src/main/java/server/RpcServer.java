@@ -17,8 +17,11 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
+import serializer.SerializerAlgorithm;
+import spi.FactoriesLoader;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author DearAhri520
@@ -39,6 +42,7 @@ public class RpcServer {
             HashMap<String, String> configMap = curator.getConfig();
             /*向消费中心传递为消费者提供服务的地址*/
             curator.addService(config.getSelfIPAddress() + ":" + config.getSelfPort());
+            /*初始化配置*/
             config.setConfig(configMap);
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,9 +93,5 @@ public class RpcServer {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
-    }
-
-    public void test(){
-
     }
 }

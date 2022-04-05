@@ -10,7 +10,6 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * @author DearAhri520
- * @date 2022/3/31
  */
 public interface CompressorAlgorithm extends Compressor {
     /**

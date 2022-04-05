@@ -4,7 +4,6 @@ import protocol.MessageType;
 
 /**
  * @author DearAhri520
- * @date 2022/3/28
  */
 public class RpcResponseMessage extends Message {
     public RpcResponseMessage() {

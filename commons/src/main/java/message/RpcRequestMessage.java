@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 /**
  * @author DearAhri520
- * @date 2022/3/28
  */
 public class RpcRequestMessage extends Message {
     /**
