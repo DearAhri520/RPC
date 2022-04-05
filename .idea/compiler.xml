@@ -9,6 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="client" />
         <module name="server" />
+        <module name="test" />
+        <module name="spi" />
         <module name="commons" />
       </profile>
     </annotationProcessing>

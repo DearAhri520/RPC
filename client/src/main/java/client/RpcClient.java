@@ -1,6 +1,6 @@
 package client;
 
-import config.Config;
+import config.ClientConfig;
 import handler.RpcResponseMessageHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -19,10 +19,11 @@ import io.netty.util.concurrent.DefaultPromise;
 import lombok.extern.slf4j.Slf4j;
 import message.PingMessage;
 import message.RpcRequestMessage;
+import promises.Promises;
 import protocol.MessageCodecSharable;
 import protocol.ProtocolFrameDecoder;
 import protocol.SequenceIdGenerator;
-import service.HelloService;
+import servers.ServerList;
 
 import java.lang.reflect.Proxy;
 
@@ -32,14 +33,12 @@ import java.lang.reflect.Proxy;
  */
 @Slf4j
 public class RpcClient {
-    private static volatile Channel channel = null;
+    private ClientConfig config = new ClientConfig();
 
-    private static final Object LOCK = new Object();
+    private ServerList serverList;
 
-    public static void main(String[] args) {
-        HelloService service = getProxyService(HelloService.class);
-        System.out.println(service.sayHello("你好"));
-        System.out.println(service.sayHello("我不好"));
+    public RpcClient() {
+        this.serverList = new ServerList();
     }
 
     /**
@@ -48,7 +47,7 @@ public class RpcClient {
      * @param <T> 代理接口
      * @return 代理对象
      */
-    public static <T> T getProxyService(Class<T> serviceClass) {
+    public <T> T getProxyService(Class<T> serviceClass) {
         ClassLoader loader = serviceClass.getClassLoader();
         Class<?>[] interfaces = new Class[]{
                 serviceClass
@@ -64,34 +63,49 @@ public class RpcClient {
                     method.getParameterTypes(),
                     args
             );
-            /*2.准备一个promise对象来接收结果,指定异步接收结果的线程*/
-            DefaultPromise<Object> promise = new DefaultPromise<>(getChannel().eventLoop());
-            /*3.设置消息序号*/
+            /*2. 根据接口名获取服务器地址*/
+            String[] connectString = serverList.getProvider(serviceClass.getName(), message).split(":");
+            /*获取channel*/
+            Channel channel = getChannel(connectString[0], connectString[1]);
+            log.info("连接服务器: IP:"+connectString[0]+" ,端口:"+connectString[1]);
+            /*3.准备一个promise对象来接收结果,指定异步接收结果的线程*/
+            DefaultPromise<Object> promise = new DefaultPromise<>(channel.eventLoop());
+            /*4.设置消息序号*/
             message.setSequenceId(sequenceId);
-            /*4.发送消息对象*/
-            getChannel().writeAndFlush(message);
-            RpcResponseMessageHandler.PROMISES.put(sequenceId, promise);
-            /*5.等待promise结果*/
-            promise.await();
-            /*正常调用*/
-            if (promise.isSuccess()) {
-                return promise.getNow();
+            /*5.发送消息对象*/
+            channel.writeAndFlush(message);
+            Promises.PROMISES.put(sequenceId, promise);
+            /*6.等待promise结果*/
+            try {
+                promise.await();
+                /*正常调用*/
+                if (promise.isSuccess()) {
+                    return promise.getNow();
+                }
+                /*异常调用*/
+                else {
+                    throw new RuntimeException(promise.cause());
+                }
+            } finally {
+                channel.close();
             }
-            /*异常调用*/
-            else {
-                throw new RuntimeException(promise.cause());
-            }
+
         });
         return (T) o;
     }
 
+    private Channel getChannel(String ipAddress, String port) {
+        return initChannel(ipAddress, port);
+    }
+
     /**
-     * 初始化channel
+     * 初始化channel,短连接
      */
-    private static void initChannel() {
+    private Channel initChannel(String ipAddress, String port) {
+        Channel channel = null;
         NioEventLoopGroup group = new NioEventLoopGroup();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
-        MessageCodecSharable messageCodecSharable = new MessageCodecSharable();
+        MessageCodecSharable messageCodecSharable = new MessageCodecSharable(config);
         RpcResponseMessageHandler rpcHandler = new RpcResponseMessageHandler();
         IdleStateHandler idleStateHandler = new IdleStateHandler(0, 3, 0);
 
@@ -122,20 +136,10 @@ public class RpcClient {
             }
         });
         try {
-            channel = bootstrap.connect(Config.getServerIPAddress(), Config.getServerPort()).sync().channel();
+            channel = bootstrap.connect(ipAddress, Integer.parseInt(port)).sync().channel();
             channel.closeFuture().addListener(future -> group.shutdownGracefully());
         } catch (Exception e) {
             log.error("client error", e);
-        }
-    }
-
-    public static Channel getChannel() {
-        if (channel == null) {
-            synchronized (LOCK) {
-                if (channel == null) {
-                    initChannel();
-                }
-            }
         }
         return channel;
     }

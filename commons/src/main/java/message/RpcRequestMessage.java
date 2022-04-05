@@ -36,7 +36,6 @@ public class RpcRequestMessage extends Message {
 
     public RpcRequestMessage(int sequenceId, String interfaceName, String methodName, Class<?> returnType, Class<?>[] parameterTypes, Object[] parameterValue) {
         super.setSequenceId(sequenceId);
-        /*todo:利用Spring改进,在容器中寻找接口的实现类*/
         this.interfaceName = interfaceName;
         this.methodName = methodName;
         this.returnType = returnType;

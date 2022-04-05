@@ -9,9 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <module>Server</module>
+        <module>server</module>
         <module>client</module>
         <module>commons</module>
+        <module>test</module>
+        <module>spi</module>
+        <module>test</module>
     </modules>
 
     <properties>
@@ -64,10 +67,31 @@
             <version>1.8.0</version>
         </dependency>
 
+        <!--spring框架-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>5.3.12</version>
+        </dependency>
+
+        <!--curator-->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>5.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--zookeeper-->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.8.0</version>
         </dependency>
     </dependencies>
 </project>

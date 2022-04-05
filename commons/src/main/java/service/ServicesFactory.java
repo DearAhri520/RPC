@@ -1,30 +1,51 @@
 package service;
 
-import java.lang.reflect.InvocationTargetException;
+import annotation.RpcService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author DearAhri520
  * @date 2022/3/28
  */
 public class ServicesFactory {
-    private static HashMap<Class<?>, Object> map = new HashMap<>(16);
+    /**
+     * 存储所有的服务
+     * 接口名->代理类
+     */
+    private static HashMap<String, Object> servicesMap = new HashMap<>(16);
 
-    public ServicesFactory() {
-
+    /*
+     * 加载service包下所有带有RpcAutowired注解的类,并保存
+     */
+    static {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        Map<String, Object> map = context.getBeansWithAnnotation(RpcService.class);
+        for (Object o : map.values()) {
+            servicesMap.put(o.getClass().getInterfaces()[0].getName(), o);
+        }
     }
 
-    public static Object getInstance(Class<?> interfaceClass) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        /*根据Class创建实例*/
-        try {
-            Class<?> clazz = Class.forName("service.HelloService");
-            Object instance = Class.forName("service.HelloServiceImpl").getDeclaredConstructor().newInstance();
+    /**
+     * 根据接口类名获取代理类
+     *
+     * @param interfaceName 接口类名
+     * @return 代理类
+     */
+    public static Object getProxy(String interfaceName) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return servicesMap.get(interfaceName);
+    }
 
-            /*放入 InterfaceClass -> InstanceObject 的映射*/
-            map.put(clazz, instance);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return map.get(interfaceClass);
+    /**
+     * 获取所有代理类
+     *
+     * @return 所有代理类
+     */
+    public static Collection<Object> allProxies() {
+        return servicesMap.values();
     }
 }

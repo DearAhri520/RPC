@@ -1,6 +1,8 @@
 package server;
 
 import config.Config;
+import config.ServerConfig;
+import curator.CuratorToServer;
 import protocol.MessageCodecSharable;
 import protocol.ProtocolFrameDecoder;
 import handler.*;
@@ -16,16 +18,36 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
+
 /**
  * @author DearAhri520
  */
 @Slf4j
 public class RpcServer {
-    public static void main(String[] args) {
+    private ServerConfig config = new ServerConfig();
+
+    /**
+     * 服务端启动
+     */
+    public void start() {
+        /*连接zookeeper*/
+        CuratorToServer curator = new CuratorToServer();
+        try {
+            curator.connect();
+            /*获取配置中心的服务器配置*/
+            HashMap<String, String> configMap = curator.getConfig();
+            /*向消费中心传递为消费者提供服务的地址*/
+            curator.addService(config.getSelfIPAddress() + ":" + config.getSelfPort());
+            config.setConfig(configMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.INFO);
-        MessageCodecSharable messageCodec = new MessageCodecSharable();
+        MessageCodecSharable messageCodec = new MessageCodecSharable(config);
         RpcRequestMessageHandler rpcHandler = new RpcRequestMessageHandler();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -59,7 +81,7 @@ public class RpcServer {
                     ch.pipeline().addLast(new QuitHandler());
                 }
             });
-            Channel channel = serverBootstrap.bind(Config.getServerPort()).sync().channel();
+            Channel channel = serverBootstrap.bind(config.getSelfPort()).sync().channel();
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("server error", e);
@@ -67,5 +89,9 @@ public class RpcServer {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
+    }
+
+    public void test(){
+
     }
 }

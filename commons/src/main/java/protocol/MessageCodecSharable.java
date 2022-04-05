@@ -9,6 +9,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import lombok.extern.slf4j.Slf4j;
+import serializer.SerializerAlgorithmFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +33,12 @@ import java.util.List;
 @Slf4j
 @ChannelHandler.Sharable
 public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message> {
+    private Config config;
+
+    public MessageCodecSharable(Config config) {
+        this.config = config;
+    }
+
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, List<Object> outList) throws IOException {
         ByteBuf out = ctx.alloc().buffer();
@@ -40,20 +47,19 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
         /*2. 1 字节的编解码版本*/
         out.writeByte(1);
         /*3. 1 字节的序列化方式 jdk 0 , json 1 , protostuff 2*/
-        out.writeByte(Config.getSerializerAlgorithm().ordinal());
+        out.writeByte(config.getSerializerAlgorithm().getIdentifier());
         /*4. 1 字节的指令类型*/
         out.writeByte(msg.getMessageType());
         /*5. 4 字节的消息序列号*/
         out.writeInt(msg.getSequenceId());
         /*6. 将对象序列化为字节数组*/
-        byte[] bytes = Config.getSerializerAlgorithm().serialize(msg);
-        CompressorAlgorithm compressAlgorithm = Config.getCompressAlgorithm();
+        byte[] bytes = config.getSerializerAlgorithm().serialize(msg);
+        CompressorAlgorithm compressAlgorithm = config.getCompressAlgorithm();
         /*如果消息体达到压缩最小消息长度,则对消息体进行压缩,并获取压缩后的消息*/
-        if (bytes.length >= Config.getMinCompressLength()) {
+        if (bytes.length >= config.getMinCompressLength()) {
             bytes = compressAlgorithm.compress(bytes);
             /*7. 1 字节的压缩标志*/
-            out.writeByte(Config.getCompressAlgorithm().ordinal());
-            System.out.println(Config.getCompressAlgorithm().ordinal());
+            out.writeByte(config.getCompressAlgorithm().getIdentifier());
         } else {
             /*7. 1 字节的压缩标志*/
             out.writeByte(0);
@@ -76,7 +82,7 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
             throw new RuntimeException("消息反序列化失败");
         }
         byte version = in.readByte();
-        byte serializerAlgorithm = in.readByte();
+        byte serializerAlgorithmIdentifier = in.readByte();
         byte messageType = in.readByte();
         int sequenceId = in.readInt();
         byte compress = in.readByte();
@@ -87,12 +93,12 @@ public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, Message
         in.readBytes(bytes, 0, length);
         /*解压消息体*/
         if (compress != 0) {
-            bytes = Config.getCompressAlgorithm().unCompress(bytes);
+            bytes = config.getCompressAlgorithm().unCompress(bytes);
         }
         Message message;
-        if (serializerAlgorithm < SerializerAlgorithm.values().length && serializerAlgorithm >= 0) {
-            /*获取反序列化算法*/
-            SerializerAlgorithm algorithm = SerializerAlgorithm.values()[serializerAlgorithm];
+        SerializerAlgorithm algorithm;
+        /*获取反序列化算法*/
+        if ((algorithm = SerializerAlgorithmFactory.getSerializerAlgorithm(serializerAlgorithmIdentifier)) != null) {
             /*获取具体的message类型*/
             Class<?> messageClass = Message.getMessageClass(messageType);
             message = (Message) algorithm.deserialize(messageClass, bytes);

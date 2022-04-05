@@ -1,11 +1,15 @@
 package compressor;
 
+import annotation.SPI;
+
 import java.io.IOException;
 
 /**
  * @author DearAhri520
- * @date 2022/3/31
+ * <p>
+ * 压缩算法,该类可被用户自定义拓展
  */
+@SPI
 public interface Compressor {
     /**
      * 压缩字节数组,并返回压缩之后的字节数组

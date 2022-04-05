@@ -1,5 +1,6 @@
 package handler;
 
+import io.netty.channel.ChannelHandler;
 import message.RpcRequestMessage;
 import message.RpcResponseMessage;
 import service.ServicesFactory;
@@ -14,6 +15,7 @@ import java.lang.reflect.Method;
  * <p>
  * 仅处理 RpcRequestMessage 消息类
  */
+@ChannelHandler.Sharable
 public class RpcRequestMessageHandler extends SimpleChannelInboundHandler<RpcRequestMessage> {
 
     @Override
@@ -21,7 +23,7 @@ public class RpcRequestMessageHandler extends SimpleChannelInboundHandler<RpcReq
         RpcResponseMessage response = new RpcResponseMessage();
         response.setSequenceId(msg.getSequenceId());
         try {
-            Object service = ServicesFactory.getInstance(Class.forName(msg.getInterfaceName()));
+            Object service = ServicesFactory.getProxy(msg.getInterfaceName());
             Method method = service.getClass().getMethod(msg.getMethodName(), msg.getParameterTypes());
             Object invoke = method.invoke(service, msg.getParameterValue());
             response.setReturnValue(invoke);
