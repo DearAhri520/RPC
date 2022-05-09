@@ -26,14 +26,21 @@ import protocol.SequenceIdGenerator;
 import servers.ServerList;
 
 import java.lang.reflect.Proxy;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author DearAhri520
  */
 @Slf4j
 public class RpcClient {
+    /**
+     * 客户端配置
+     */
     private ClientConfig config = new ClientConfig();
 
+    /**
+     * 可用服务列表
+     */
     private ServerList serverList;
 
     public RpcClient() {
@@ -76,7 +83,7 @@ public class RpcClient {
             Promises.PROMISES.put(sequenceId, promise);
             /*6.等待promise结果*/
             try {
-                promise.await();
+                promise.await(10, TimeUnit.SECONDS);
                 /*正常调用*/
                 if (promise.isSuccess()) {
                     return promise.getNow();
@@ -87,8 +94,8 @@ public class RpcClient {
                 }
             } finally {
                 channel.close();
+                log.info("连接已关闭");
             }
-
         });
         return (T) o;
     }
@@ -106,7 +113,7 @@ public class RpcClient {
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
         MessageCodecSharable messageCodecSharable = new MessageCodecSharable(config);
         RpcResponseMessageHandler rpcHandler = new RpcResponseMessageHandler();
-        IdleStateHandler idleStateHandler = new IdleStateHandler(0, 3, 0);
+        IdleStateHandler idleStateHandler = new IdleStateHandler(0, 10, 0);
 
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.channel(NioSocketChannel.class);
@@ -127,7 +134,7 @@ public class RpcClient {
                         /*获取事件*/
                         IdleStateEvent event = (IdleStateEvent) evt;
                         if (event.state() == IdleState.WRITER_IDLE) {
-                            log.debug("3s内未写入数据,发送心跳包");
+                            log.debug("10s内未写入数据,发送心跳包");
                             ctx.writeAndFlush(new PingMessage());
                         }
                     }

@@ -1,6 +1,7 @@
 package service;
 
 import annotation.RpcService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * @author DearAhri520
  */
+@Slf4j
 public class ServicesFactory {
     /**
      * 存储所有的服务
@@ -26,6 +28,7 @@ public class ServicesFactory {
         Map<String, Object> map = context.getBeansWithAnnotation(RpcService.class);
         for (Object o : map.values()) {
             servicesMap.put(o.getClass().getInterfaces()[0].getName(), o);
+            log.info("扫描到服务:{}",o.getClass().getInterfaces()[0].getName());
         }
     }
 

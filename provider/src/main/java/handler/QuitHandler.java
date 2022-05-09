@@ -13,18 +13,19 @@ import java.util.Arrays;
 @Slf4j
 @ChannelHandler.Sharable
 public class QuitHandler extends ChannelInboundHandlerAdapter {
-    @Override
+
     /**
      * 连接断开时触发该事件
-     * */
+     */
+    @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.info("连接 {} 已经断开", ctx.channel());
     }
 
-    @Override
     /**
      * 出现异常时触发该事件
      * */
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         /*记录异常日志*/
         log.error(Arrays.toString(cause.getStackTrace()));

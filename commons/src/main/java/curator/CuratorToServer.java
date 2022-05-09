@@ -1,5 +1,6 @@
 package curator;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.CreateMode;
 import service.ServicesFactory;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * @author DearAhri520
  */
+@Slf4j
 public class CuratorToServer extends CuratorClient {
     /**
      * 添加该服务器的所有服务
@@ -20,6 +22,7 @@ public class CuratorToServer extends CuratorClient {
         for (Object o : proxies) {
             /*向zookeeper中注册临时节点服务*/
             curatorClient.create().creatingParentContainersIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/services/" + o.getClass().getInterfaces()[0].getName() + "/" + connectString);
+            log.info("注册服务 {} 至zookeeper",o.getClass().getInterfaces()[0].getName() + "/" + connectString);
         }
     }
 

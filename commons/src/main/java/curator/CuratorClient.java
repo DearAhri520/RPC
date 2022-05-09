@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * @author DearAhri520
  * <p>
- * 名称空间:rpc
+ * 名称空间: /rpc
  */
 public class CuratorClient {
     protected CuratorFramework curatorClient;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Archetypes.Configuration">
+    <option name="archetypesFileLocation" value="archetypes.xml" />
     <option name="workingDirectory" value="" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
@@ -8,6 +9,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/provider/pom.xml" />
       </list>
     </option>
   </component>
