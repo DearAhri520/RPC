@@ -6,14 +6,13 @@ import close.Close;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
  * @author DearAhri520
  */
-public class GzipCompressorAlgorithm implements CompressorAlgorithm {
+public class GzipCompressorAlgorithm implements CompressionAlgorithm {
 
     @Override
     public byte[] compress(byte[] bytes) throws IOException {

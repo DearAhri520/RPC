@@ -1,7 +1,7 @@
 package serializer;
 
 import lombok.extern.slf4j.Slf4j;
-import spi.FactoriesLoader;
+import spi.RpcFactoriesLoader;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +18,7 @@ public class SerializerAlgorithmFactory {
 
     static {
         serializerMap = new ConcurrentHashMap<>();
-        List<SerializerAlgorithm> algorithmList = FactoriesLoader.loadFactories(SerializerAlgorithm.class, SerializerAlgorithmFactory.class.getClassLoader());
+        List<SerializerAlgorithm> algorithmList = RpcFactoriesLoader.loadFactories(SerializerAlgorithm.class, SerializerAlgorithmFactory.class.getClassLoader());
         /*SPI机制加载*/
         for (int i = 0; i < algorithmList.size(); i++) {
             addSerializerAlgorithm(algorithmList.get(i));
@@ -50,7 +50,7 @@ public class SerializerAlgorithmFactory {
      */
     public static void addSerializerAlgorithm(SerializerAlgorithm algorithm) {
         serializerMap.put(algorithm.getIdentifier(), algorithm);
-        log.info("加载序列化算法 {}", algorithm.getName());
+        log.info("Load serialization algorithm {}", algorithm.getName());
     }
 
     /**

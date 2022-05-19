@@ -7,7 +7,6 @@ import annotation.SPI;
  * <p>
  * 用户可拓展该序列化算法
  */
-@SPI
 public interface SerializerAlgorithm extends Serializer {
     /**
      * 获取序列化算法标识符

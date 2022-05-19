@@ -11,22 +11,18 @@
 
     <artifactId>test</artifactId>
     <dependencies>
+
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>client</artifactId>
+            <artifactId>commons</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.example</groupId>
-            <artifactId>server</artifactId>
+            <artifactId>provider-starter</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>spi</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 

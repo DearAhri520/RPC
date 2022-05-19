@@ -4,17 +4,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.2</version>
+        <relativePath/>
+    </parent>
+
     <groupId>org.example</groupId>
     <artifactId>Netty</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <module>server</module>
-        <module>client</module>
+        <module>consumer</module>
         <module>commons</module>
         <module>test</module>
-        <module>spi</module>
-        <module>test</module>
+        <module>provider-starter</module>
+        <module>consumer-starter</module>
+        <module>provider</module>
     </modules>
 
     <properties>
@@ -23,24 +30,28 @@
     </properties>
 
     <dependencies>
+        <!--netty网络通信-->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.51.Final</version>
         </dependency>
 
+        <!--lombok依赖-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.18</version>
         </dependency>
 
+        <!--谷歌guava工具包-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>20.0</version>
         </dependency>
 
+        <!--logback日志框架-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -67,13 +78,6 @@
             <version>1.8.0</version>
         </dependency>
 
-        <!--spring框架-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.3.12</version>
-        </dependency>
-
         <!--curator-->
         <dependency>
             <groupId>org.apache.curator</groupId>
@@ -87,11 +91,24 @@
             </exclusions>
         </dependency>
 
+        <!--curator服务注册 -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-x-discovery</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+
         <!--zookeeper-->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>3.8.0</version>
+        </dependency>
+
+        <!--springboot依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>

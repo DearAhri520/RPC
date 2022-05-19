@@ -9,7 +9,6 @@ import java.io.IOException;
  * <p>
  * 压缩算法,该类可被用户自定义拓展
  */
-@SPI
 public interface Compressor {
     /**
      * 压缩字节数组,并返回压缩之后的字节数组

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author DearAhri520
  * <p>
- * 使用该注解表明接口可拓展
+ * 该注解表明接口可被用户自定义拓展
  */
 @Target(value = {ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
