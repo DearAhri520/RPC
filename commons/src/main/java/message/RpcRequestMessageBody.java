@@ -39,11 +39,11 @@ public class RpcRequestMessageBody extends MessageBody {
      */
     private Object[] parameterValue;
 
-    public RpcRequestMessageBody(String interfaceName, String methodName, Class<?> returnType, Class<?>[] parameterTypes, Object[] parameterValue) {
+    public RpcRequestMessageBody(String interfaceName, String methodName, Class<?>[] parameterTypes, Object[] parameterValue, Class<?> returnType) {
         this.interfaceName = interfaceName;
         this.methodName = methodName;
-        this.returnType = returnType;
         this.parameterTypes = parameterTypes;
         this.parameterValue = parameterValue;
+        this.returnType = returnType;
     }
 }

@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author DearAhri520
  * <p>
- * * 基于gson的Json序列化和反序列化
+ * 基于gson的Json序列化和反序列化
  */
 public class JsonSerializerAlgorithm implements SerializerAlgorithm {
     @Override
@@ -25,16 +25,6 @@ public class JsonSerializerAlgorithm implements SerializerAlgorithm {
         String json = new String(bytes, StandardCharsets.UTF_8);
         /*此处的clazz为具体类型的Class对象，而不是父类Message的类型*/
         return gson.fromJson(json, clazz);
-    }
-
-    @Override
-    public byte getIdentifier() {
-        return 1;
-    }
-
-    @Override
-    public String getName() {
-        return "JSON";
     }
 
     /**
@@ -56,5 +46,15 @@ public class JsonSerializerAlgorithm implements SerializerAlgorithm {
         public JsonElement serialize(Class<?> aClass, Type type, JsonSerializationContext jsonSerializationContext) {
             return new JsonPrimitive(aClass.getName());
         }
+    }
+
+    @Override
+    public byte getIdentifier() {
+        return 1;
+    }
+
+    @Override
+    public String getName() {
+        return "Json";
     }
 }

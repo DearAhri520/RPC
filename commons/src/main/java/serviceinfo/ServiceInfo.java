@@ -22,7 +22,7 @@ public class ServiceInfo {
     private Integer port;
 
     /**
-     * 服务接口
+     * 服务接口名称
      */
     private String interfaceName;
 }

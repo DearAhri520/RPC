@@ -31,7 +31,7 @@ public class ServerList {
         listen();
     }
 
-    public void listen(){
+    public void listen() {
         curator.listen((client, event) -> {
             /*仅监听添加与删除事件*/
             if (event.getType() != PathChildrenCacheEvent.Type.CHILD_ADDED && event.getType() != PathChildrenCacheEvent.Type.CHILD_REMOVED) {
@@ -74,7 +74,6 @@ public class ServerList {
         });
     }
 
-
     /**
      * 根据服务名 , 获取一个可用的服务器IP与端口
      *
@@ -87,5 +86,6 @@ public class ServerList {
             throw new RuntimeException("服务:" + service + "不存在");
         }
         return providers.getServer(message);
+        return null;
     }
 }

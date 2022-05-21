@@ -1,13 +1,7 @@
 package autoconfigure;
 
-import compressor.CompressionAlgorithm;
-import compressor.CompressionAlgorithmFactory;
-import loadbalance.LoadBalance;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import serializer.SerializerAlgorithm;
-import serializer.SerializerAlgorithmFactory;
-import loadbalance.LoadingAlgorithmFactory;
 
 /**
  * @author DearAhri520
@@ -28,5 +22,20 @@ public class RpcClientProperties {
     /**
      * 服务调用超时时间毫秒
      */
-    private Integer timeout = 1000;
+    private Integer timeout = 10000;
+
+    /**
+     * 序列化算法
+     */
+    private String serializer = "Proto";
+
+    /**
+     * 压缩算法
+     */
+    private String compressor = "Gzip";
+
+    /**
+     * 负载均衡算法
+     */
+    private String balance = "ConsistentHash";
 }

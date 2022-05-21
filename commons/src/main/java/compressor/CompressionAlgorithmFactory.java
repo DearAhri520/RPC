@@ -45,7 +45,7 @@ public class CompressionAlgorithmFactory {
                 return a;
             }
         }
-        return null;
+        return compressorMap.get(CompressorType.Gzip.getType());
     }
 
     /**

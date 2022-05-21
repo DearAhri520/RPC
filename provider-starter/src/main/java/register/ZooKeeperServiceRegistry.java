@@ -18,12 +18,12 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
     /**
      * 初始sleep时间
      */
-    private final int Base_Sleep_Time_Ms = 3000;
+    private static final int BASE_SLEEP_TIME_MS = 3000;
 
     /**
      * 最大重试次数
      */
-    private final int Max_Retries = 10;
+    private static final int MAX_RETRIES = 10;
 
     /**
      * rpc命名空间
@@ -33,7 +33,7 @@ public class ZooKeeperServiceRegistry implements ServiceRegistry {
     private ServiceDiscovery<ServiceInfo> serviceRegistry;
 
     public ZooKeeperServiceRegistry(String registryAddress) {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(registryAddress, new ExponentialBackoffRetry(Base_Sleep_Time_Ms, Max_Retries));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(registryAddress, new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES));
         client.start();
         JsonInstanceSerializer<ServiceInfo> serializer = new JsonInstanceSerializer<>(ServiceInfo.class);
         this.serviceRegistry = ServiceDiscoveryBuilder.builder(ServiceInfo.class).

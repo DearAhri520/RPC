@@ -16,9 +16,8 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import protocol.ServerMessageCodecSharable;
+import codec.MessageCodecSharable;
 
-import java.util.HashMap;
 
 /**
  * @author DearAhri520
@@ -36,8 +35,30 @@ public class NettyRpcServer implements RpcServer {
     public void start() {
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
+        /*心跳处理handler,心跳包handler,5秒内未收到channel的数据 , 触发 IdleState#READER_IDLE 事件*/
+        IdleStateHandler idleStateHandler = new IdleStateHandler(25, 0, 0);
+        /*心跳响应handler,该处理器可以同时作为入栈与出栈处理器,负责处理READER_IDLE事件*/
+        ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
+            @Override
+            public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                if (evt instanceof IdleStateEvent) {
+                    /*获取事件*/
+                    IdleStateEvent event = (IdleStateEvent) evt;
+                    /*读空闲超过25s,则认为网络异常,关闭连接*/
+                    if (event.state() == IdleState.READER_IDLE) {
+                        ctx.channel().close();
+                        log.debug("读空闲已经超过25秒,关闭连接");
+                    }
+                }
+            }
+        };
+        /*黏包半包处理*/
+        ProtocolFrameDecoder protocolFrameDecoder = new ProtocolFrameDecoder();
+        /*日志处理handler*/
         LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
-        ServerMessageCodecSharable messageCodec = new ServerMessageCodecSharable();
+        /*编解码handler*/
+        MessageCodecSharable messageCodec = new MessageCodecSharable();
+        /*rpc逻辑处理handler*/
         RpcRequestHandler rpcHandler = new RpcRequestHandler();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -46,25 +67,9 @@ public class NettyRpcServer implements RpcServer {
             serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    /*心跳包handler,5秒内未收到channel的数据 , 触发 IdleState#READER_IDLE 事件*/
-                    ch.pipeline().addLast(new IdleStateHandler(25, 0, 0));
-                    /*添加双向处理器ChannelDuplexHandler,该处理器可以同时作为入栈与出栈处理器,负责处理READER_IDLE事件*/
-                    ch.pipeline().addLast(new ChannelDuplexHandler() {
-                        @Override
-                        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                            if (evt instanceof IdleStateEvent) {
-                                /*获取事件*/
-                                IdleStateEvent event = (IdleStateEvent) evt;
-                                /*读空闲超过25s,则认为网络异常,关闭连接*/
-                                if (event.state() == IdleState.READER_IDLE) {
-                                    ctx.channel().close();
-                                    log.debug("读空闲已经超过25秒,关闭连接");
-                                }
-                            }
-                        }
-                    });
-                    /*处理黏包半包*/
-                    ch.pipeline().addLast(new ProtocolFrameDecoder());
+                    ch.pipeline().addLast(idleStateHandler);
+                    ch.pipeline().addLast(channelDuplexHandler);
+                    ch.pipeline().addLast(protocolFrameDecoder);
                     ch.pipeline().addLast(loggingHandler);
                     ch.pipeline().addLast(messageCodec);
                     ch.pipeline().addLast(rpcHandler);

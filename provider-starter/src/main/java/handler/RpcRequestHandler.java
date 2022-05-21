@@ -24,7 +24,6 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<MessageProtoc
     protected void channelRead0(ChannelHandlerContext ctx, MessageProtocol msg) throws Exception {
         MessageHeader header = msg.getHeader();
         byte msgType = header.getType();
-
         /*心跳请求消息*/
         if (msgType == MessageType.PingMessage.getMessageType()) {
             header.setType(MessageType.PongMessage.getMessageType());

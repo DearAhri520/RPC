@@ -33,5 +33,4 @@ public class MessageProtocol {
      * 消息体
      */
     private MessageBody body;
-
 }

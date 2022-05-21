@@ -28,11 +28,11 @@ public class SerializerAlgorithmFactory {
     /**
      * 根据标识符获取对应序列化算法
      *
-     * @param identifier 标识符
+     * @param type 序列化算法标识符
      * @return 序列化算法
      */
-    public static SerializerAlgorithm getSerializerAlgorithm(byte identifier) {
-        return serializerMap.get(identifier);
+    public static SerializerAlgorithm getSerializerAlgorithm(byte type) {
+        return serializerMap.get(type);
     }
 
     public static SerializerAlgorithm getSerializerAlgorithm(String name) {
@@ -42,7 +42,7 @@ public class SerializerAlgorithmFactory {
                 return a;
             }
         }
-        return null;
+        return serializerMap.get(SerializerType.Proto.getType());
     }
 
     /**

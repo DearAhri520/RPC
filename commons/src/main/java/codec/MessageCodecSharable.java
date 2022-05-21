@@ -1,4 +1,4 @@
-package protocol;
+package codec;
 
 import compressor.CompressionAlgorithm;
 import compressor.CompressionAlgorithmFactory;
@@ -6,6 +6,8 @@ import message.ErrorMessageBody;
 import message.MessageBody;
 import message.MessageHeader;
 import message.MessageProtocol;
+import protocol.MessageType;
+import protocol.ProtocolConstants;
 import serializer.SerializerAlgorithm;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
@@ -28,12 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class ServerMessageCodecSharable extends MessageToMessageCodec<ByteBuf, MessageProtocol> {
-    /**
-     * 魔数:387383298,转换成byte数组即为{23,23,0,2}
-     */
-    private static final int MAGIC_NUMBER = 387383298;
-
+public class MessageCodecSharable extends MessageToMessageCodec<ByteBuf, MessageProtocol> {
     /**
      * 解码
      * 字节流 -> 消息
@@ -41,33 +38,33 @@ public class ServerMessageCodecSharable extends MessageToMessageCodec<ByteBuf, M
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         MessageProtocol messageProtocol = new MessageProtocol();
-        MessageHeader header = new MessageHeader();
         MessageBody body;
-        messageProtocol.setHeader(header);
-
+        /*1. 读取魔数*/
         int magicNum = in.readInt();
-        if (magicNum != MAGIC_NUMBER) {
+        /*2. 读取消息版本*/
+        byte version = in.readByte();
+        /*3. 读取消息类型*/
+        byte type = in.readByte();
+        /*4. 读取消息序列号*/
+        int sequenceId = in.readInt();
+        /*5. 读取序列化算法ID*/
+        byte serializer = in.readByte();
+        /*6. 读取压缩算法ID*/
+        byte compress = in.readByte();
+        /*7. 读取消息体长度*/
+        int bodyLen = in.readInt();
+        MessageHeader header = new MessageHeader(magicNum, version, type, sequenceId, serializer, compress, bodyLen);
+        messageProtocol.setHeader(header);
+        /*检查magicNumber*/
+        if (magicNum != ProtocolConstants.MAGIC_NUMBER) {
             log.error("Message deserialization failed , magic Number is wrong", in.array());
             header.setType(MessageType.ErrorMessage.getMessageType());
+            header.setMagicNum(ProtocolConstants.MAGIC_NUMBER);
             body = new ErrorMessageBody(new RuntimeException("Magic Number is wrong"));
             messageProtocol.setBody(body);
             out.add(messageProtocol);
             return;
         }
-        /*1. 读取魔数*/
-        header.setMagicNum(magicNum);
-        /*2. 读取消息版本*/
-        header.setVersion(in.readByte());
-        /*3. 读取消息类型*/
-        header.setType(in.readByte());
-        /*4. 读取消息序列号*/
-        header.setSequenceId(in.readInt());
-        /*5. 读取序列化算法ID*/
-        header.setSerializer(in.readByte());
-        /*6. 读取压缩算法ID*/
-        header.setCompress(in.readByte());
-        /*7. 读取消息体长度*/
-        header.setBodyLength(in.readInt());
         byte[] bytes = new byte[header.getBodyLength()];
         /*8. 读取消息体内容*/
         in.readBytes(bytes, 0, header.getBodyLength());
@@ -118,7 +115,7 @@ public class ServerMessageCodecSharable extends MessageToMessageCodec<ByteBuf, M
     protected void encode(ChannelHandlerContext ctx, MessageProtocol msg, List<Object> outList) throws IOException {
         ByteBuf out = ctx.alloc().buffer();
         /*1. 4 字节的魔数 ,转换成int即为 387383298 */
-        out.writeBytes(new byte[]{23, 23, 0, 2});
+        out.writeBytes(ProtocolConstants.MAGIC_NUMBER_BYTES);
         /*2. 1 字节的消息版本*/
         out.writeByte(msg.getHeader().getVersion());
         /*3. 1字节的消息类型*/
@@ -127,7 +124,6 @@ public class ServerMessageCodecSharable extends MessageToMessageCodec<ByteBuf, M
         out.writeInt(msg.getHeader().getSequenceId());
         /*5. 1 字节的序列化算法ID jdk 0 , json 1 , protostuff 2*/
         out.writeByte(msg.getHeader().getSerializer());
-
         /*将 MessageBody 序列化为字节数组*/
         SerializerAlgorithm serializer = SerializerAlgorithmFactory.getSerializerAlgorithm(msg.getHeader().getSerializer());
         byte[] bytes = serializer.serialize(msg.getBody());

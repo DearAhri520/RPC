@@ -1,5 +1,6 @@
 package message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * 消息头
  */
 @Data
+@AllArgsConstructor
 public class MessageHeader {
     /**
      * 魔数
