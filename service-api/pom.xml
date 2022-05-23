@@ -9,22 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test</artifactId>
-    <dependencies>
-
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>commons</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>provider-starter</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+    <artifactId>service-api</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

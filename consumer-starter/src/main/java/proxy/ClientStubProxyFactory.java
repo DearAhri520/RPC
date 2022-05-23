@@ -1,7 +1,9 @@
 package proxy;
 
-import autoconfigure.RpcClientProperties;
-import discovery.ServiceDiscovery;
+import properties.RpcClientProperties;
+import discovery.ServiceDiscover;
+import loadbalance.LoadBalance;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -10,7 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author DearAhri520
  */
+@Slf4j
 public class ClientStubProxyFactory {
+    public ClientStubProxyFactory() {
+        log.info("加载ClientStubProxyFactory类");
+    }
+
     /**
      * 服务代理缓存
      */
@@ -25,13 +32,14 @@ public class ClientStubProxyFactory {
      * @return 生成的代理类对象
      */
     @SuppressWarnings({"unchecked"})
-    public <T> T getProxy(Class<T> clazz, RpcClientProperties properties, ServiceDiscovery serviceDiscovery) {
+    public <T> T getProxy(Class<T> clazz, RpcClientProperties properties, ServiceDiscover serviceDiscover, LoadBalance loadBalance) {
         Object o;
         if ((o = proxyCache.get(clazz)) == null) {
             o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new ClientStubInvocationHandler(
                     clazz,
                     properties,
-                    serviceDiscovery
+                    serviceDiscover,
+                    loadBalance
             ));
             proxyCache.put(clazz, o);
         }

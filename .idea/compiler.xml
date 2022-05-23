@@ -8,15 +8,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="consumer-starter" />
-        <module name="provider-starter" />
-        <module name="test" />
         <module name="provider" />
+        <module name="provider-starter" />
         <module name="commons" />
         <module name="consumer" />
+        <module name="service-api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="spi" target="11" />
+      <module name="test" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -26,6 +27,7 @@
       <module name="consumer-starter" options="-parameters" />
       <module name="provider" options="-parameters" />
       <module name="provider-starter" options="-parameters" />
+      <module name="service-api" options="-parameters" />
       <module name="spi" options="-parameters" />
       <module name="test" options="-parameters" />
     </option>

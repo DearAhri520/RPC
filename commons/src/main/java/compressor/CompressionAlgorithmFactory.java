@@ -1,7 +1,7 @@
 package compressor;
 
 import lombok.extern.slf4j.Slf4j;
-import spi.RpcFactoriesLoader;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +21,10 @@ public class CompressionAlgorithmFactory {
 
     static {
         compressorMap = new ConcurrentHashMap<>();
-        List<CompressionAlgorithm> algorithmList = RpcFactoriesLoader.loadFactories(CompressionAlgorithm.class, CompressionAlgorithmFactory.class.getClassLoader());
+        List<CompressionAlgorithm> algorithmList = SpringFactoriesLoader.loadFactories(CompressionAlgorithm.class, CompressionAlgorithmFactory.class.getClassLoader());
         /*SPI机制加载*/
-        for (int i = 0; i < algorithmList.size(); i++) {
-            addCompressorAlgorithm(algorithmList.get(i));
+        for (CompressionAlgorithm compressionAlgorithm : algorithmList) {
+            addCompressorAlgorithm(compressionAlgorithm);
         }
     }
 

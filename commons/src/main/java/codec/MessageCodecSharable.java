@@ -6,7 +6,7 @@ import message.ErrorMessageBody;
 import message.MessageBody;
 import message.MessageHeader;
 import message.MessageProtocol;
-import protocol.MessageType;
+import message.MessageType;
 import protocol.ProtocolConstants;
 import serializer.SerializerAlgorithm;
 import io.netty.buffer.ByteBuf;

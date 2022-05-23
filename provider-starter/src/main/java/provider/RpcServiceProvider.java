@@ -18,6 +18,9 @@ import java.net.InetAddress;
 public class RpcServiceProvider implements BeanPostProcessor {
     private RpcServerProperties properties;
     private ServiceRegistry serviceRegistry;
+    /**
+     * 配置发现,该类用于获取注册中心配置,暂不使用
+     */
     private ConfigurationDiscovery configurationDiscovery;
 
     public RpcServiceProvider(RpcServerProperties properties, ServiceRegistry serviceRegistry, ConfigurationDiscovery configurationDiscovery) {

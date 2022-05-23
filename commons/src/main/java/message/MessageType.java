@@ -1,4 +1,6 @@
-package protocol;
+package message;
+
+import lombok.Getter;
 
 /**
  * @author DearAhri520
@@ -12,21 +14,18 @@ public enum MessageType {
      */
     PingMessage((byte) 1),
     PongMessage((byte) 2),
-    RpcRequestMessage((byte) 100),
-    RpcResponseMessage((byte) 101),
+    RequestMessage((byte) 100),
+    ResponseMessage((byte) 101),
     ErrorMessage((byte) 200);
 
     /**
      * 消息类型
      */
-    byte messageType;
+    @Getter
+    final byte messageType;
 
     MessageType(byte messageType) {
         this.messageType = messageType;
-    }
-
-    public byte getMessageType() {
-        return messageType;
     }
 
     public static MessageType findByType(byte type) {

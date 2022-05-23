@@ -1,6 +1,5 @@
 package message;
 
-import protocol.MessageType;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,8 +18,8 @@ public abstract class MessageBody implements Serializable {
     }
 
     static {
-        MESSAGE_CLASSES.put(MessageType.RpcRequestMessage.getMessageType(), RpcRequestMessageBody.class);
-        MESSAGE_CLASSES.put(MessageType.RpcResponseMessage.getMessageType(), RpcResponseMessageBody.class);
+        MESSAGE_CLASSES.put(MessageType.RequestMessage.getMessageType(), RequestMessageBody.class);
+        MESSAGE_CLASSES.put(MessageType.ResponseMessage.getMessageType(), ResponseMessageBody.class);
         MESSAGE_CLASSES.put(MessageType.PingMessage.getMessageType(), PingMessageBody.class);
         MESSAGE_CLASSES.put(MessageType.PongMessage.getMessageType(), PongMessageBody.class);
         MESSAGE_CLASSES.put(MessageType.ErrorMessage.getMessageType(), ErrorMessageBody.class);

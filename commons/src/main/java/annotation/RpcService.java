@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  */
 @Target(value = {ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Service
 @Documented
+@Service
 public @interface RpcService {
 }

@@ -3,10 +3,11 @@ package handler;
 import io.netty.channel.ChannelHandler;
 import lombok.extern.slf4j.Slf4j;
 import message.*;
-import protocol.MessageType;
+import message.MessageType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import provider.ServiceCache;
+import utils.MessageUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,16 +27,18 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<MessageProtoc
         byte msgType = header.getType();
         /*心跳请求消息*/
         if (msgType == MessageType.PingMessage.getMessageType()) {
-            header.setType(MessageType.PongMessage.getMessageType());
-            msg.setBody(new PongMessageBody());
+            log.info("{}发送了心跳包请求消息", ctx.channel().remoteAddress());
+            ctx.writeAndFlush(MessageUtils.newPongMessage());
+            return;
         }
         /*调用RPC*/
-        else if (msgType == MessageType.RpcRequestMessage.getMessageType()) {
+        else if (msgType == MessageType.RequestMessage.getMessageType()) {
+            log.info("{}:发送了一个rpc请求:{}", ctx.channel().remoteAddress(), msg);
             try {
                 Object returnValue = handler(msg);
-                RpcResponseMessageBody body = new RpcResponseMessageBody();
-                header.setType(MessageType.RpcResponseMessage.getMessageType());
-                body.setReturnValue(returnValue);
+                ResponseMessageBody body = new ResponseMessageBody(returnValue);
+                header.setType(MessageType.ResponseMessage.getMessageType());
+                msg.setBody(body);
             } catch (Exception e) {
                 log.error("Method invoke error", e);
                 header.setType(MessageType.ErrorMessage.getMessageType());
@@ -44,6 +47,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<MessageProtoc
         }
         /*解码过程出错*/
         else if (msgType == MessageType.ErrorMessage.getMessageType()) {
+            log.warn("解码过程出错,无法处理");
             //do nothing
         }
         /*不能处理该消息类型*/
@@ -52,6 +56,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<MessageProtoc
             header.setType(MessageType.ErrorMessage.getMessageType());
             log.warn("Message type could be processed");
         }
+        log.info("向{}响应rpc请求:{}", ctx.channel().remoteAddress(), msg);
         ctx.writeAndFlush(msg);
     }
 
@@ -62,7 +67,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<MessageProtoc
      * @return 调用返回结果
      */
     private Object handler(MessageProtocol msg) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        RpcRequestMessageBody body = (RpcRequestMessageBody) msg.getBody();
+        RequestMessageBody body = (RequestMessageBody) msg.getBody();
         Object service = ServiceCache.getService(body.getInterfaceName());
         Method method = service.getClass().getMethod(body.getMethodName(), body.getParameterTypes());
         return method.invoke(service, body.getParameterValue());

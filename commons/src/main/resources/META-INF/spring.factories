@@ -1,0 +1,8 @@
+serializer.SerializerAlgorithm=\
+    serializer.JsonSerializerAlgorithm,\
+    serializer.ProtostuffSerializerAlgorithm,\
+    serializer.JavaSerializerAlgorithm
+
+compressor.CompressionAlgorithm=\
+    compressor.GzipCompressorAlgorithm,\
+    compressor.DefaultCompressorAlgorithm

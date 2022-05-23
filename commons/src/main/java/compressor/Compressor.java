@@ -1,7 +1,5 @@
 package compressor;
 
-import annotation.SPI;
-
 import java.io.IOException;
 
 /**

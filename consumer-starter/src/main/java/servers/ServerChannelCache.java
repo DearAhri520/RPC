@@ -2,6 +2,7 @@ package servers;
 
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import serviceinfo.ServiceInfo;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,29 +15,29 @@ public class ServerChannelCache {
     /**
      * server连接缓存
      */
-    private static Map<ServerInfo, Channel> serverCache = new ConcurrentHashMap<>();
+    private static Map<ServiceInfo, Channel> serverCache = new ConcurrentHashMap<>();
 
-    public static void addServerChannel(ServerInfo serverInfo, Channel channel) {
-        if (serverCache.get(serverInfo) == null) {
-            log.info("连接:{} 加入本地连接缓存", serverInfo);
-            serverCache.put(serverInfo, channel);
+    public static void addServerChannel(ServiceInfo serviceInfo, Channel channel) {
+        if (serverCache.get(serviceInfo) == null) {
+            log.info("连接:{} 加入本地连接缓存", serviceInfo);
+            serverCache.put(serviceInfo, channel);
         }
     }
 
-    public static void removeServerChannel(ServerInfo serverInfo) {
+    public static void removeServerChannel(ServiceInfo serviceInfo) {
         Channel channel;
-        if ((channel = serverCache.get(serverInfo)) != null) {
+        if ((channel = serverCache.get(serviceInfo)) != null) {
             channel.close();
-            log.info("连接:{} 从本地连接缓存清除", serverInfo);
-            serverCache.remove(serverInfo);
+            log.info("连接:{} 从本地连接缓存清除", serviceInfo);
+            serverCache.remove(serviceInfo);
         }
     }
 
-    public static Channel getServerChannel(ServerInfo serverInfo) {
-        return serverCache.get(serverInfo);
+    public static Channel getServerChannel(ServiceInfo serviceInfo) {
+        return serverCache.get(serviceInfo);
     }
 
-    public static boolean containServerChannel(ServerInfo serverInfo) {
-        return serverCache.containsKey(serverInfo);
+    public static boolean containServerChannel(ServiceInfo serviceInfo) {
+        return serverCache.containsKey(serviceInfo);
     }
 }

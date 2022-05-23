@@ -20,12 +20,12 @@ public class ZookeeperConfigurationDiscovery implements ConfigurationDiscovery {
     /**
      * 初始sleep时间
      */
-    private static final int Base_Sleep_Time_Ms = 3000;
+    private static final int BASE_SLEEP_TIME_MS = 3000;
 
     /**
      * 最大重试次数
      */
-    private static final int Max_Retries = 10;
+    private static final int MAX_RETRIES = 10;
 
     /**
      * rpc命名空间
@@ -33,12 +33,12 @@ public class ZookeeperConfigurationDiscovery implements ConfigurationDiscovery {
     private static final String NAMESPACE = "rpc";
 
     /**
-     * session过期时间
+     * session超时时间
      */
     private static final Integer SESSION_TIMEOUT_MS = 60 * 1000;
 
     /**
-     *
+     * 连接超时时间
      */
     private static final Integer CONNECTION_TIMEOUT_MS = 15 * 1000;
 
@@ -46,7 +46,7 @@ public class ZookeeperConfigurationDiscovery implements ConfigurationDiscovery {
 
     public ZookeeperConfigurationDiscovery(String registryAddress) {
         try {
-            RetryPolicy retryPolicy = new ExponentialBackoffRetry(Base_Sleep_Time_Ms, Max_Retries);
+            RetryPolicy retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES);
             configurationDiscovery = CuratorFrameworkFactory.builder().
                     connectString(registryAddress).
                     sessionTimeoutMs(SESSION_TIMEOUT_MS).
@@ -75,7 +75,7 @@ public class ZookeeperConfigurationDiscovery implements ConfigurationDiscovery {
                 configs.put(key, value);
             }
         } catch (Exception e) {
-            log.error("Configurations discovery error", e);
+            log.error("Zookeeper Configurations discovery error", e);
         }
         return configs;
     }

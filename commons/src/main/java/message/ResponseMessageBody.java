@@ -1,5 +1,6 @@
 package message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,7 +9,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RpcResponseMessageBody extends MessageBody {
+@AllArgsConstructor
+public class ResponseMessageBody extends MessageBody {
     /**
      * 返回值
      */

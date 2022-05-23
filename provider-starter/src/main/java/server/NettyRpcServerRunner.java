@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import properties.RpcServerProperties;
 import register.ServiceRegistry;
-import provider.RpcServiceProvider;
 
 /**
  * @author DearAhri520
@@ -29,8 +28,7 @@ public class NettyRpcServerRunner implements CommandLineRunner {
     public NettyRpcServerRunner(RpcServerProperties properties,
                                 ServiceRegistry serviceRegistry,
                                 ConfigurationDiscovery configurationDiscovery,
-                                RpcServer rpcServer,
-                                RpcServiceProvider rpcServiceProvider) {
+                                RpcServer rpcServer) {
         this.properties = properties;
         this.server = rpcServer;
         this.serviceRegistry = serviceRegistry;

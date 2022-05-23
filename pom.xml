@@ -18,10 +18,10 @@
     <modules>
         <module>consumer</module>
         <module>commons</module>
-        <module>test</module>
         <module>provider-starter</module>
         <module>consumer-starter</module>
         <module>provider</module>
+        <module>service-api</module>
     </modules>
 
     <properties>

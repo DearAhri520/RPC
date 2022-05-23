@@ -1,7 +1,6 @@
 package serializer;
 
 import lombok.extern.slf4j.Slf4j;
-import serializer.SerializerAlgorithm;
 
 import java.io.*;
 

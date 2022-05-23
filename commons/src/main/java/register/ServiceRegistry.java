@@ -4,6 +4,7 @@ import serviceinfo.ServiceInfo;
 
 /**
  * @author DearAhri520
+ * <p>
  * 服务注册接口
  */
 public interface ServiceRegistry {

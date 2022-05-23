@@ -11,5 +11,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 public class ErrorMessageBody extends MessageBody {
-    private Exception e;
+    private Exception exception;
 }

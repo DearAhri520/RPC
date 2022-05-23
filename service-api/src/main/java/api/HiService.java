@@ -1,14 +1,14 @@
-package provider;
+package api;
 
 /**
  * @author DearAhri520
  */
-public interface HelloService {
+public interface HiService {
     /**
-     * 打印出hello
+     * 打印出hi
      *
      * @param name 打印的消息
      * @return 打印的消息
      */
-    String sayHello(String name);
+    String sayHi(String name);
 }

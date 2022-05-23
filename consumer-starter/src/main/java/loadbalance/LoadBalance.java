@@ -2,7 +2,7 @@ package loadbalance;
 
 import annotation.SPI;
 import message.MessageBody;
-import servers.ServerInfo;
+import serviceinfo.ServiceInfo;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @SPI
 public interface LoadBalance {
     /**
-     * 从一组服务器列表中获取一个服务器
+     * 从一组服务列表中获取一个服务
      *
      * @param addresses   服务器列表
      * @param messageBody 消息体
      * @return 单个服务器
      */
-    ServerInfo getServer(List<ServerInfo> addresses, MessageBody messageBody);
+    ServiceInfo getServer(List<ServiceInfo> addresses, MessageBody messageBody);
 }

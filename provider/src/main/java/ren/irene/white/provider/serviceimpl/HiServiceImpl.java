@@ -1,7 +1,7 @@
-package ren.irene.white.provider.service;
+package ren.irene.white.provider.serviceimpl;
 
 import annotation.RpcService;
-import provider.HiService;
+import api.HiService;
 
 /**
  * @author DearAhri520

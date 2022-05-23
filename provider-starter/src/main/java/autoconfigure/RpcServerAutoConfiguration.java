@@ -61,15 +61,14 @@ public class RpcServerAutoConfiguration {
     public RpcServiceProvider rpcServiceProvider(@Autowired RpcServerProperties properties,
                                                  @Autowired ServiceRegistry serviceRegistry,
                                                  @Autowired ConfigurationDiscovery configurationDiscovery) {
-        return new RpcServiceProvider(properties, serviceRegistry,configurationDiscovery);
+        return new RpcServiceProvider(properties, serviceRegistry, configurationDiscovery);
     }
 
     @Bean
     @ConditionalOnMissingBean(NettyRpcServerRunner.class)
     public NettyRpcServerRunner nettyRpcServerStarter(@Autowired ServiceRegistry serviceRegistry,
                                                       @Autowired ConfigurationDiscovery configurationDiscovery,
-                                                      @Autowired RpcServer rpcServer,
-                                                      @Autowired RpcServiceProvider rpcServiceProvider) {
-        return new NettyRpcServerRunner(properties, serviceRegistry, configurationDiscovery, rpcServer, rpcServiceProvider);
+                                                      @Autowired RpcServer rpcServer) {
+        return new NettyRpcServerRunner(properties, serviceRegistry, configurationDiscovery, rpcServer);
     }
 }

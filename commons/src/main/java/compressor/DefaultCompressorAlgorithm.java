@@ -1,7 +1,5 @@
 package compressor;
 
-import compressor.CompressionAlgorithm;
-
 import java.io.IOException;
 
 /**

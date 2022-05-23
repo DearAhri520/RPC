@@ -1,6 +1,7 @@
 package serviceinfo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -10,6 +11,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@EqualsAndHashCode
 public class ServiceInfo {
     /**
      * IP地址

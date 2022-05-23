@@ -1,11 +1,9 @@
 package message;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import protocol.MessageType;
-
-import java.util.Arrays;
 
 /**
  * @author DearAhri520
@@ -13,7 +11,8 @@ import java.util.Arrays;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class RpcRequestMessageBody extends MessageBody {
+@AllArgsConstructor
+public class RequestMessageBody extends MessageBody {
     /**
      * 调用的接口全限定名，服务端根据它找到实现
      */
@@ -25,11 +24,6 @@ public class RpcRequestMessageBody extends MessageBody {
     private String methodName;
 
     /**
-     * 方法返回类型
-     */
-    private Class<?> returnType;
-
-    /**
      * 方法参数类型数组
      */
     private Class<?>[] parameterTypes;
@@ -39,11 +33,8 @@ public class RpcRequestMessageBody extends MessageBody {
      */
     private Object[] parameterValue;
 
-    public RpcRequestMessageBody(String interfaceName, String methodName, Class<?>[] parameterTypes, Object[] parameterValue, Class<?> returnType) {
-        this.interfaceName = interfaceName;
-        this.methodName = methodName;
-        this.parameterTypes = parameterTypes;
-        this.parameterValue = parameterValue;
-        this.returnType = returnType;
-    }
+    /**
+     * 方法返回类型
+     */
+    private Class<?> returnType;
 }

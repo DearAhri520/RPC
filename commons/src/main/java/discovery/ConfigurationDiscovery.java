@@ -2,6 +2,8 @@ package discovery;
 
 /**
  * @author DearAhri520
+ * <p>
+ * 配置发现接口
  */
 public interface ConfigurationDiscovery {
     /**
